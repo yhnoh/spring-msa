@@ -1,0 +1,53 @@
+server:
+  port: 8080
+
+
+  #라우트(Route)
+#  라우트의 몾ㄱ적지는 URI, 조건자 목록과 필터의 목록을 식별하기 위한 고유 ID로 구성
+#  라우트는 모든 조건자가 충족 됬을 때만 매칭
+#
+#  조건자(Predicates)
+#  각 요청을 처리하기 전에 실행되는 로직, 헤더와 입력값 등 다양한 HTTP 요청이 정의된 기준에 맞는지를 확인
+# https://cloud.spring.io/spring-cloud-gateway/reference/html/
+# https://cheese10yun.github.io/spring-cloud-gateway/
+#  필터
+#  Http 요청 또는 나가는 Http응답을 수정할 수 있다.
+#  라우트 필터는 특정 라우트에 하전
+
+# https://www.baeldung.com/spring-cloud-gateway-routing-predicate-factories
+
+spring:
+  cloud:
+    gateway:
+      #Gateway ?? ??
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Filter
+            preLogger: true
+            postLogger: true
+      routes:
+        - id: user-service1
+          uri: http://127.0.0.1:8081
+          predicates:
+           - Path=/user-service/**
+           - Weight=group-user, 5
+        - id: user-service2
+          uri: http://127.0.0.1:8082
+          predicates:
+            - Path=/user-service/**
+            - Weight=group-user, 5
+#        - id: order-service
+#          uri: http://127.0.0.1:8082
+#          predicates:
+#            - Path=/order-service/**
+#            - Cookie=name, value
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "gateway"
+  endpoint:
+    gateway:
+      enabled: true
