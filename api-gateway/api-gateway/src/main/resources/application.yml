@@ -17,6 +17,20 @@ server:
 # https://www.baeldung.com/spring-cloud-gateway-routing-predicate-factories
 
 spring:
+  application:
+    name: api-gateway
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://127.0.0.1/~/api-gateway
+    username: sa
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
   cloud:
     gateway:
       #Gateway ?? ??
@@ -27,16 +41,36 @@ spring:
             preLogger: true
             postLogger: true
       routes:
+        - id: login-service
+          uri: http://127.0.0.1:9000
+          predicates:
+            - Path=/login
+            - Method=POST
         - id: user-service1
-          uri: http://127.0.0.1:8081
+          uri: http://127.0.0.1:8500
           predicates:
            - Path=/user-service/**
            - Weight=group-user, 5
+          filters:
+           - name: AuthorizationFilter
+             args:
+               baseMessage: Spring Cloud Gateway Filter
+               preLogger: true
+               postLogger: true
+           - RewritePath=/user-service/(?<path>.*),/$\{path}
         - id: user-service2
-          uri: http://127.0.0.1:8082
+          uri: http://127.0.0.1:8501
           predicates:
             - Path=/user-service/**
             - Weight=group-user, 5
+          filters:
+            - name: AuthorizationFilter
+              args:
+                baseMessage: Spring Cloud Gateway Filter
+                preLogger: true
+                postLogger: true
+            - RewritePath=/user-service/(?<path>.*),/$\{path}
+
 #        - id: order-service
 #          uri: http://127.0.0.1:8082
 #          predicates:

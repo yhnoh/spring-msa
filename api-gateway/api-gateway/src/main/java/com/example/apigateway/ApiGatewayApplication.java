@@ -5,6 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 /**
+ *
+ * api gateway 인가 : https://velog.io/@tlatldms/API-Gateway-Refresh-JWT-%EC%9D%B8%EC%A6%9D%EC%84%9C%EB%B2%84-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0-Spring-boot-Spring-Cloud-Gateway-Redis-mysql-JPA-2%ED%8E%B8
+ * https://www.baeldung.com/spring-cloud-custom-gateway-filters
  * 선행 학습
  * 리액터 프로그래밍, 논블로킹,블로킹 동기,비동기
  * 논블로킹, 비동기 방식으로 인해 Tomcat 서버가 아닌 Netty서버를 사용

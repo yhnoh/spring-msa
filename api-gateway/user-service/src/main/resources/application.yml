@@ -1,12 +1,30 @@
 # 스프링 부트 2.4 이후 부터는 profile 설정 ㅕ변경됨
 # http://honeymon.io/tech/2021/01/16/spring-boot-config-data-migration.html
 
+server:
+  port: 8500
+
 spring:
   application:
     name: user-service
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://127.0.0.1/~/api-gateway
+    username: sa
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+
+
+
 ---
 server:
-  port: 8081
+  port: 8500
 
 spring:
   config:
@@ -16,7 +34,7 @@ spring:
 ---
 
 server:
-  port: 8082
+  port: 8501
 
 spring:
   config:

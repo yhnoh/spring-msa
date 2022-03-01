@@ -1,4 +1,4 @@
-package com.example.loginservice.user.domain;
+package com.example.apigateway.user.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;

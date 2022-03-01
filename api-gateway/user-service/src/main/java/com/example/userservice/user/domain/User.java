@@ -1,4 +1,4 @@
-package com.example.loginservice.user.domain;
+package com.example.userservice.user.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,7 +10,6 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -20,9 +19,4 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserAuthorize authorize;
 
-    public User(String username, String password, UserAuthorize authorize) {
-        this.username = username;
-        this.password = password;
-        this.authorize = authorize;
-    }
 }

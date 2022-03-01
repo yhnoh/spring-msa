@@ -1,6 +1,6 @@
-package com.example.loginservice.security;
+package com.example.loginservice.security.authentication;
 
-import com.example.loginservice.security.provider.JwtUserDetails;
+import com.example.loginservice.security.authentication.provider.JwtUserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -16,9 +16,8 @@ import java.io.IOException;
 
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final AuthenticationManager authenticationManager;
     public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
+        super(authenticationManager);
     }
 
 
