@@ -28,13 +28,12 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<Config> {
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
-
             if(config.isPreLogger()){
-                log.info("Global filter start :request id -> {}", request.getId());
+                log.info("Global filter start :request id -> {} threadName = {}", request.getId(), Thread.currentThread().getName());
             }
             return chain.filter(exchange).then(Mono.fromRunnable((Runnable) () -> {
-                if(config.isPreLogger()){
-                    log.info("Global filter end :request id -> {}", request.getId());
+                if(config.isPostLogger()){
+                    log.info("Global filter end :request id -> {} threadName = {}", request.getId(), Thread.currentThread().getName());
                 }
             }));
         };

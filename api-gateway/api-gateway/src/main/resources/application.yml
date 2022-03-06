@@ -1,24 +1,10 @@
 server:
   port: 8080
 
-
-  #라우트(Route)
-#  라우트의 몾ㄱ적지는 URI, 조건자 목록과 필터의 목록을 식별하기 위한 고유 ID로 구성
-#  라우트는 모든 조건자가 충족 됬을 때만 매칭
-#
-#  조건자(Predicates)
-#  각 요청을 처리하기 전에 실행되는 로직, 헤더와 입력값 등 다양한 HTTP 요청이 정의된 기준에 맞는지를 확인
-# https://cloud.spring.io/spring-cloud-gateway/reference/html/
-# https://cheese10yun.github.io/spring-cloud-gateway/
-#  필터
-#  Http 요청 또는 나가는 Http응답을 수정할 수 있다.
-#  라우트 필터는 특정 라우트에 하전
-
-# https://www.baeldung.com/spring-cloud-gateway-routing-predicate-factories
-
 spring:
   application:
     name: api-gateway
+  #H2 데이터 베이스 사용
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:tcp://127.0.0.1/~/api-gateway
@@ -33,7 +19,7 @@ spring:
         use_sql_comments: true
   cloud:
     gateway:
-      #Gateway ?? ??
+      #글로벌 필터 : 모든 필터에서 가장 최 상단에 위치
       default-filters:
         - name: GlobalFilter
           args:
@@ -41,11 +27,18 @@ spring:
             preLogger: true
             postLogger: true
       routes:
+        # 로그인 서비스
+        # 대상 URL은 http://127.0.0.1:9000번 포트이다. http://127.0.0.1:8080 -> http://127.0.0.1:9000
+        # /login와 POST방식만 요청 가능
         - id: login-service
           uri: http://127.0.0.1:9000
           predicates:
             - Path=/login
             - Method=POST
+        # 유저 서비스
+        # /user-service/** -> /user-service/**
+        # Weight=group-user, 5 부하 분산을 사용하기 위해서 user-service1에 5, user-service2에 5
+        # RewritePath=/user-service/(?<path>.*),/$\{path}, user-service/** -> /** 로 변경
         - id: user-service1
           uri: http://127.0.0.1:8500
           predicates:
@@ -70,12 +63,6 @@ spring:
                 preLogger: true
                 postLogger: true
             - RewritePath=/user-service/(?<path>.*),/$\{path}
-
-#        - id: order-service
-#          uri: http://127.0.0.1:8082
-#          predicates:
-#            - Path=/order-service/**
-#            - Cookie=name, value
 management:
   endpoints:
     web:

@@ -29,20 +29,22 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Config> {
     private final UserTokenJpaRepository userTokenJpaRepository;
     AntPathMatcher antPathMatcher = new AntPathMatcher();
 
+    //토큰 정보를 받아서, 유저정보 찾기
     @Transactional(readOnly = true)
     UserToken findLoginUser(String token){
         UserToken userToken = userTokenJpaRepository.findByToken(token);
         return userToken;
     }
 
+    //USER PATH 체크
     public boolean isUserPath(String path){
         return antPathMatcher.match("/user-service/users/**", path);
     }
-
+    //ADMIN PATH 체크
     public boolean isAdminPath(String path){
         return antPathMatcher.match("/user-service/admins/**", path);
     }
-
+    //권한이 필요한지 체크
     public boolean isAuthorizationPath(String path){
         return isUserPath(path) || isAdminPath(path);
     }
@@ -52,18 +54,26 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Config> {
         this.userTokenJpaRepository = userTokenJpaRepository;
     }
 
+    private Mono<Void> handleUnAuthorized(ServerWebExchange exchange){
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(HttpStatus.FORBIDDEN);
+        return response.setComplete();
+    }
+
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
             String path = request.getPath().toString();
+            log.info("Authorization filter start :request id -> {} threadName = {}", request.getId(), Thread.currentThread().getName());
 
             if(!isAuthorizationPath(path)){
                 return chain.filter(exchange).then(Mono.fromRunnable((Runnable) () -> {
-
+                    log.info("Authorization filter end :request id -> {} threadName = {}", request.getId(), Thread.currentThread().getName());
                 }));
             }
+
             //인가 키가 없을 경우
             if(!exchange.getRequest().getHeaders().containsKey("Authorization")){
                 return handleUnAuthorized(exchange);
@@ -75,6 +85,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Config> {
             if(loginUser == null){
                 return handleUnAuthorized(exchange);
             }
+
             //인가 시간이 지난 경우
             if(loginUser.getExpireTime().isBefore(LocalDateTime.now())){
                 return handleUnAuthorized(exchange);
@@ -85,9 +96,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Config> {
 
             if(isAdmin || isUser){
                 return chain.filter(exchange).then(Mono.fromRunnable((Runnable) () -> {
-                    if(config.isPreLogger()){
-                        log.info("Authorization Filter end :request id -> {}", request.getId());
-                    }
+                    log.info("Authorization filter end :request id -> {} threadName = {}", request.getId(), Thread.currentThread().getName());
                 }));
             }
 
@@ -95,11 +104,6 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Config> {
         };
     }
 
-    private Mono<Void> handleUnAuthorized(ServerWebExchange exchange){
-        ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(HttpStatus.FORBIDDEN);
-        return response.setComplete();
-    }
     @Getter
     static class Config{
         private String baseMessage;
