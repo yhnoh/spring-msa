@@ -7,4 +7,5 @@ spring:
       server:
         git:
           #window? ?? file:/// ???? file://
-          uri: file:///${user.home}/Desktop/yhnoh/study/msa/spring-cloud-config/config-property
+#          uri: file:///${user.home}/Desktop/yhnoh/study/msa-config-property
+          uri: https://github.com/yhnoh/spring-msa-config-property

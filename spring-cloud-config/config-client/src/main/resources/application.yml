@@ -1,0 +1,32 @@
+server:
+  port: 8889
+
+spring:
+  cloud:
+    config:
+      uri: http://127.0.0.1:8888
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+
+---
+server:
+  port: 8890
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+
+---
+server:
+  port: 8891
+
+spring:
+  config:
+    activate:
+      on-profile: real
+
