@@ -1,0 +1,10 @@
+server:
+  port: 8888
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          #window? ?? file:/// ???? file://
+          uri: file:///${user.home}/Desktop/yhnoh/study/msa/spring-cloud-config/config-property
