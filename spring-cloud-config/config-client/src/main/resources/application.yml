@@ -2,14 +2,21 @@ server:
   port: 8889
 
 spring:
-  cloud:
-    config:
-      uri: http://127.0.0.1:8888
+  rabbitmq:
+    username: guest
+    password: guest
+    host: localhost
+    port: 5672
+  config:
+    import: "optional:configserver:http://localhost:8888"
+#  cloud:
+#    config:
+#      uri: http://127.0.0.1:8888
 management:
   endpoints:
     web:
       exposure:
-        include: refresh
+        include: refresh,bus-refresh
 
 ---
 server:
