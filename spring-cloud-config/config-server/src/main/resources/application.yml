@@ -4,12 +4,12 @@ spring:
   cloud:
     config:
       server:
-
         git:
           #window? ?? file:/// ???? file://
 #          uri: file:///${user.home}/Desktop/yhnoh/study/msa-config-property
           uri: https://github.com/yhnoh/spring-msa-config-property
         default-label: master
+# spring-cloud-config-monitor 설정
     bus:
       enabled: true
   rabbitmq:
