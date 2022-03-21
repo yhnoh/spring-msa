@@ -342,6 +342,7 @@
 - **Publish Message** : 메시지 브로커의 채널에 설정파일 변경 통보
 - S**ubscribe Message** : 채널을 수신하는 각 config client는 변경내용을 수정
 
+## **출처**
 > 공식 레퍼런스 : [https://cloud.spring.io/spring-cloud-config/reference/html/](https://cloud.spring.io/spring-cloud-config/reference/html/)
 > 
 
